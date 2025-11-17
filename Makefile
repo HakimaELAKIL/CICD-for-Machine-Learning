@@ -1,14 +1,14 @@
 install:
-	py -3.12 -m pip install -r requirements.txt
+	python -3.12 -m pip install -r requirements.txt
 
 format:
 	black *.py
 
 run:
-	py -3.12 train.py
+	python -3.12 train.py
 
 train:
-	py -3.12 train.py
+	python -3.12 train.py
 
 eval:
 	echo "## Model Metrics" > report.md
