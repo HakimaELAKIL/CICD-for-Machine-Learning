@@ -6,11 +6,15 @@
 PYTHON = py -3.12
 HF_REPO = Hakima2004/diabete_prediction
 HF_TOKEN = $(HF)  # Assurez-vous que la variable d'environnement HF est définie
+CML_TOKEN = $(CML_GITHUB_TOKEN)
+REPORT_FILE = report.md
+METRICS_FILE = .\Results\metrics.txt
+CONF_MATRIX = Results/model_results.png
 
 # Installer les dépendances
 install:
 	@$(PYTHON) -m pip install --upgrade pip &&\
-	@$(PYTHON) -m pip install -r requirements.txt
+	$(PYTHON) -m pip install -r requirements.txt
 
 # Formater le code Python
 format:
@@ -22,11 +26,17 @@ train:
 
 # Générer un rapport d'évaluation
 eval:
-	@echo "## Model Metrics" > report.md
-	@cat ./Results/metrics.txt >> report.md
-	@echo '\n## Confusion Matrix Plot' >> report.md
-	@echo '![Confusion Matrix](./Results/model_results.png)' >> report.md
-	@cml comment create report.md
+	@echo "## Model Metrics" > $(REPORT_FILE)
+	@type $(METRICS_FILE) >> $(REPORT_FILE)
+	@echo. >> $(REPORT_FILE)
+	@echo "## Confusion Matrix Plot" >> $(REPORT_FILE)
+	@echo "![Confusion Matrix](./$(CONF_MATRIX))" >> $(REPORT_FILE)
+ifneq ($(CML_TOKEN),)
+	@echo "Posting report with CML..."
+	@cml comment create $(REPORT_FILE)
+else
+	@echo "CML token not found. Skipping comment creation."
+endif
 
 # Se connecter à Hugging Face
 hf-login:
