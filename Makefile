@@ -9,7 +9,7 @@ HF_TOKEN = $(HF)  # Assurez-vous que la variable d'environnement HF est définie
 
 # Installer les dépendances
 install:
-	@$(PYTHON) -m pip install --upgrade pip
+	@$(PYTHON) -m pip install --upgrade pip &&\
 	@$(PYTHON) -m pip install -r requirements.txt
 
 # Formater le code Python

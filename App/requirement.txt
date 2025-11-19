@@ -1,2 +1,5 @@
+black
 scikit-learn
 skops
+gradio
+pandas
