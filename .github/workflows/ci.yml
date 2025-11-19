@@ -1,23 +1,45 @@
-name: Continuous Deployment
+name: Continuous Integration
 
-# Déclencheur : après la fin du workflow CI
 on:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types:
-      - completed
-  workflow_dispatch:  # optionnel, permet de déclencher manuellement
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions: write-all
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Récupérer le code
       - uses: actions/checkout@v3
 
-      # Déployer vers Hugging Face
-      - name: Deployment To Hugging Face
+      # Setup CML pour les rapports
+      - uses: iterative/setup-cml@v2
+
+      # Installer les packages
+      - name: Install Packages
+        run: make install
+
+      # Formatage du code
+      - name: Format
+        if: false
+        run: make format
+
+      # Entraîner le modèle
+      - name: Train
+        run: make train
+
+      # Évaluation et création du rapport
+      - name: Evaluation
         env:
-          HF: ${{ secrets.HF }}   # token Hugging Face
-        run: make deploy HF=$HF
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make eval
+
+      # Mise à jour de la branche update avec les résultats
+      - name: Update Branch
+        env:
+          NAME: ${{ secrets.USER_NAME }}
+          EMAIL: ${{ secrets.USER_EMAIL }}
+        run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL
