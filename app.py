@@ -1,10 +1,15 @@
 # App/diabete_app.py
 import gradio as gr
 import skops.io as sio
+from skops.io._persist import get_untrusted_types
 import pandas as pd
 
-# Charger le modèle
-model = sio.load("Model/diabetes_pipeline.skops", trusted=["sklearn", "numpy", "pandas"])
+# Charger le modèle en mode sûr
+# 1️⃣ Obtenir les types non fiables à partir du fichier
+untrusted = get_untrusted_types(file="Model/diabetes_pipeline.skops")
+
+# 2️⃣ Charger le modèle en ajoutant ces types à trusted
+model = sio.load("Model/diabetes_pipeline.skops", trusted=untrusted)
 
 # Fonction de prédiction
 def predict_diabetes(Age, BMI, Glucose, BloodPressure):
