@@ -24,13 +24,9 @@ format:
 train:
 	@$(PYTHON) train.py
 
-# Générer un rapport d'évaluation
 eval:
-	echo "## Model Metrics" > report.md
-	type .\Results\metrics.txt >> report.md
-	echo. >> report.md
-	echo "## Confusion Matrix Plot" >> report.md
-	echo "![Confusion Matrix](.\Results\model_results.png)" >> report.md
+	powershell -Command "echo '## Model Metrics' > report.md; Get-Content .\Results\metrics.txt >> report.md; echo '' >> report.md; echo '## Confusion Matrix Plot' >> report.md; echo '![Confusion Matrix](./Results/model_results.png)' >> report.md"
+
 
 # Se connecter à Hugging Face
 hf-login:
