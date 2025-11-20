@@ -1,14 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import skops.io as sio
 from skops.io import get_untrusted_types
+import skops.io as sio
 
-# Charger les types non fiables
-untrusted = get_untrusted_types()
+# Fournir le chemin du fichier .skops
+untrusted = get_untrusted_types(file="Model/diabetes_pipeline.skops")
 
-# Charger le modèle SKOPS
+# Charger le modèle en utilisant la liste des types de confiance
 model = sio.load("Model/diabetes_pipeline.skops", trusted=untrusted)
+
 
 st.title("Prédiction du diabète")
 
