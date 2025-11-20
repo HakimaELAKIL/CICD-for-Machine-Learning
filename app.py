@@ -1,33 +1,31 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-from skops.io import get_untrusted_types
+# App/diabete_app.py
+import gradio as gr
 import skops.io as sio
+import pandas as pd
 
-# Fournir le chemin du fichier .skops
-untrusted = get_untrusted_types(file="Model/diabetes_pipeline.skops")
+# Charger le modèle
+model = sio.load("Model/diabetes_pipeline.skops", trusted=["sklearn", "numpy", "pandas"])
 
-# Charger le modèle en utilisant la liste des types de confiance
-model = sio.load("Model/diabetes_pipeline.skops", trusted=untrusted)
+# Fonction de prédiction
+def predict_diabetes(Age, BMI, Glucose, BloodPressure):
+    data = pd.DataFrame([[Age, BMI, Glucose, BloodPressure]],
+                        columns=["Age", "BMI", "Glucose", "BloodPressure"])
+    pred = model.predict(data)
+    return "Diabetic" if pred[0] == 1 else "Non-Diabetic"
 
+# Interface Gradio
+iface = gr.Interface(
+    fn=predict_diabetes,
+    inputs=[
+        gr.Number(label="Age"),
+        gr.Number(label="BMI"),
+        gr.Number(label="Glucose"),
+        gr.Number(label="Blood Pressure")
+    ],
+    outputs=gr.Text(label="Prediction"),
+    title="Diabetes Prediction",
+    description="Predict if a patient is diabetic based on simple features"
+)
 
-st.title("Prédiction du diabète")
-
-pregnancies = st.number_input("Pregnancies", 0, 20, 0)
-glucose = st.number_input("Glucose", 0, 200, 120)
-blood_pressure = st.number_input("Blood Pressure", 0, 150, 70)
-skin_thickness = st.number_input("Skin Thickness", 0, 100, 20)
-insulin = st.number_input("Insulin", 0, 900, 80)
-bmi = st.number_input("BMI", 0.0, 70.0, 25.0)
-dpf = st.number_input("Diabetes Pedigree Function", 0.0, 3.0, 0.5)
-age = st.number_input("Age", 1, 120, 30)
-
-data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness,
-                  insulin, bmi, dpf, age]])
-
-if st.button("Predict"):
-    pred = model.predict(data)[0]
-    if pred == 1:
-        st.error("⚠️ Le patient est probablement diabétique.")
-    else:
-        st.success("✓ Le patient n'est probablement pas diabétique.")
+if __name__ == "__main__":
+    iface.launch()
