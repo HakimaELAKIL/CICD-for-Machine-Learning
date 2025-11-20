@@ -3,8 +3,14 @@ import pandas as pd
 import numpy as np
 import skops.io as sio
 
-# Charger le modèle
-model = sio.load("Model/diabetes_pipeline.skops", trusted=True)
+import skops.io as sio
+from skops.io import get_untrusted_types
+
+# Charger les types non fiables
+untrusted = get_untrusted_types("Model/diabetes_pipeline.skops")
+
+# Charger le modèle en approuvant ces types
+model = sio.load("Model/diabetes_pipeline.skops", trusted=untrusted)
 
 st.title("Prédiction du diabète")
 
