@@ -35,10 +35,15 @@ hf-login:
 
 # Pousser les fichiers sur Hugging Face
 push-hub:
-	@echo "Uploading App..."
-	@hf upload $(HF_REPO) ./App App --repo-type=space
+	@echo "Uploading app.py..."
+	@hf upload $(HF_REPO) ./app.py app.py --repo-type=space
+
+	@echo "Uploading requirements.txt..."
+	@hf upload $(HF_REPO) ./requirements.txt requirements.txt --repo-type=space
+
 	@echo "Uploading Model..."
 	@hf upload $(HF_REPO) ./Model Model --repo-type=space
+
 	@echo "Uploading Results..."
 	@hf upload $(HF_REPO) ./Results Results --repo-type=space
 
