@@ -2,6 +2,6 @@ streamlit
 black
 scikit-learn
 matplotlib
-skops
+skops>=0.10
 gradio
 pandas
