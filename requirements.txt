@@ -1,5 +1,6 @@
 black
 scikit-learn
+matplotlib
 skops
 gradio
 pandas
