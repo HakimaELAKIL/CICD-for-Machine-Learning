@@ -26,17 +26,11 @@ train:
 
 # Générer un rapport d'évaluation
 eval:
-	@echo "## Model Metrics" > $(REPORT_FILE)
-	@type $(METRICS_FILE) >> $(REPORT_FILE)
-	@echo. >> $(REPORT_FILE)
-	@echo "## Confusion Matrix Plot" >> $(REPORT_FILE)
-	@echo "![Confusion Matrix](./$(CONF_MATRIX))" >> $(REPORT_FILE)
-ifneq ($(CML_TOKEN),)
-	@echo "Posting report with CML..."
-	@cml comment create $(REPORT_FILE)
-else
-	@echo "CML token not found. Skipping comment creation."
-endif
+	echo "## Model Metrics" > report.md
+	type .\Results\metrics.txt >> report.md
+	echo. >> report.md
+	echo "## Confusion Matrix Plot" >> report.md
+	echo "![Confusion Matrix](.\Results\model_results.png)" >> report.md
 
 # Se connecter à Hugging Face
 hf-login:
